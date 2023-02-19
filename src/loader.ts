@@ -1,4 +1,5 @@
 import { Group } from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 type LoadedModelRecord = {
   url: string;
@@ -6,13 +7,13 @@ type LoadedModelRecord = {
 };
 
 export class LoadedModelRegister {
-  records: { [key: string]: LoadedModelRecord };
+  #records: { [key: string]: LoadedModelRecord };
   constructor() {
-    this.records = {};
+    this.#records = {};
   }
 
   get keys() {
-    return Object.keys(this.records);
+    return Object.keys(this.#records);
   }
 
   has(key: string) {
@@ -24,9 +25,9 @@ export class LoadedModelRegister {
       throw `${key} is already loading`;
     }
 
-    this.records[key] = {
+    this.#records[key] = {
       url: url,
-      model: null,
+      model: new Group(),
     };
   }
 
@@ -35,12 +36,12 @@ export class LoadedModelRegister {
       throw 'loading method must be called first';
     }
 
-    this.records[key]['model'] = model;
+    this.#records[key]['model'] = model;
   }
 
   getModel(key: string) {
     if (this.has(key) && this.isLoaded(key)) {
-      return this.records[key]['model'];
+      return this.#records[key]['model'];
     }
 
     throw `${key} is not loaded`;
@@ -48,7 +49,7 @@ export class LoadedModelRegister {
 
   getUrl(key: string) {
     if (this.has(key)) {
-      return this.records[key]['url'];
+      return this.#records[key]['url'];
     }
 
     throw `${key} is not loaded`;
@@ -63,7 +64,7 @@ export class LoadedModelRegister {
       return false;
     }
 
-    return this.records[key]['model'] == null;
+    return this.#records[key]['model'] == null;
   }
 
   isLoaded(key: string) {
@@ -71,7 +72,7 @@ export class LoadedModelRegister {
       return false;
     }
 
-    return this.records[key]['model'] != null;
+    return this.#records[key]['model'] != null;
   }
 
   allLoaded() {
@@ -85,6 +86,55 @@ export class LoadedModelRegister {
   }
 
   speak() {
-    console.table(this.records);
+    console.table(this.#records);
+  }
+}
+
+export class ModelLoader {
+  private _register: LoadedModelRegister;
+  constructor() {
+    this._register = new LoadedModelRegister();
+  }
+
+  load(key: string, url: string) {
+    if (this._register.has(key)) {
+      console.log(`Model ${key} already exists`);
+      return;
+    }
+
+    this._register.loading(key, url);
+
+    const loader = new GLTFLoader();
+    loader.load(
+      url,
+      // called when loaded
+      (gltf) => {
+        this._register.loaded(key, gltf.scene);
+      },
+      // called while loading is progressing
+      function (xhr) {
+        console.log(`${key} is ${(xhr.loaded / xhr.total) * 100}% loaded`);
+      },
+      // called when loading has errors
+      function (error) {
+        console.log(`An error happened: ${error}`);
+      }
+    );
+  }
+
+  getModel(key: string) {
+    return this._register.getModel(key);
+  }
+
+  getUrl(key: string) {
+    return this._register.getUrl(key);
+  }
+
+  allLoaded() {
+    return this._register.allLoaded();
+  }
+
+  speak() {
+    this._register.speak();
   }
 }
