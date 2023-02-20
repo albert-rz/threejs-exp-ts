@@ -3,17 +3,17 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 type LoadedModelRecord = {
   url: string;
-  model: Group;
+  model?: Group;
 };
 
 export class LoadedModelRegister {
-  #records: { [key: string]: LoadedModelRecord };
+  private records: { [key: string]: LoadedModelRecord };
   constructor() {
-    this.#records = {};
+    this.records = {};
   }
 
   get keys() {
-    return Object.keys(this.#records);
+    return Object.keys(this.records);
   }
 
   has(key: string) {
@@ -25,10 +25,7 @@ export class LoadedModelRegister {
       throw `${key} is already loading`;
     }
 
-    this.#records[key] = {
-      url: url,
-      model: new Group(),
-    };
+    this.records[key] = { url: url };
   }
 
   loaded(key: string, model: Group) {
@@ -36,12 +33,12 @@ export class LoadedModelRegister {
       throw 'loading method must be called first';
     }
 
-    this.#records[key]['model'] = model;
+    this.records[key]['model'] = model;
   }
 
   getModel(key: string) {
     if (this.has(key) && this.isLoaded(key)) {
-      return this.#records[key]['model'];
+      return this.records[key]['model'];
     }
 
     throw `${key} is not loaded`;
@@ -49,7 +46,7 @@ export class LoadedModelRegister {
 
   getUrl(key: string) {
     if (this.has(key)) {
-      return this.#records[key]['url'];
+      return this.records[key]['url'];
     }
 
     throw `${key} is not loaded`;
@@ -64,7 +61,7 @@ export class LoadedModelRegister {
       return false;
     }
 
-    return this.#records[key]['model'] == null;
+    return this.records[key].model == undefined
   }
 
   isLoaded(key: string) {
@@ -72,7 +69,7 @@ export class LoadedModelRegister {
       return false;
     }
 
-    return this.#records[key]['model'] != null;
+    return this.records[key].model != undefined;
   }
 
   allLoaded() {
@@ -86,7 +83,7 @@ export class LoadedModelRegister {
   }
 
   speak() {
-    console.table(this.#records);
+    console.table(this.records);
   }
 }
 
