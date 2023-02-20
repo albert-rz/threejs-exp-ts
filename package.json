@@ -11,6 +11,7 @@
     "coverage": "vitest run --coverage",
     "prettier": "prettier --write ."
   },
+  "pre-commit": ["prettier"],
   "devDependencies": {
     "@types/three": "^0.149.0",
     "@vitest/coverage-istanbul": "^0.28.5",
@@ -22,6 +23,5 @@
   },
   "dependencies": {
     "three": "^0.149.0"
-  },
-  "pre-commit": ["prettier"]
+  }
 }
