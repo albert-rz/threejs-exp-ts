@@ -6,8 +6,8 @@ beforeEach(async (context) => {
   context.register = new LoadedModelRegister();
   context.loader = new ModelLoader();
   vi.spyOn(context.loader, 'load').mockImplementation((key, url) => {
-    context.loader._register.loading(key, url);
-    context.loader._register.loaded(key, 'model');
+    context.loader.register.loading(key, url);
+    context.loader.register.loaded(key, 'model');
   });
 });
 

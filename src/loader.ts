@@ -38,7 +38,7 @@ export class LoadedModelRegister {
 
   getModel(key: string) {
     if (this.has(key) && this.isLoaded(key)) {
-      return this.records[key]['model'];
+      return this.records[key].model;
     }
 
     throw `${key} is not loaded`;
@@ -46,7 +46,7 @@ export class LoadedModelRegister {
 
   getUrl(key: string) {
     if (this.has(key)) {
-      return this.records[key]['url'];
+      return this.records[key].url;
     }
 
     throw `${key} is not loaded`;
@@ -61,7 +61,7 @@ export class LoadedModelRegister {
       return false;
     }
 
-    return this.records[key].model == undefined
+    return this.records[key].model == undefined;
   }
 
   isLoaded(key: string) {
@@ -88,25 +88,25 @@ export class LoadedModelRegister {
 }
 
 export class ModelLoader {
-  private _register: LoadedModelRegister;
+  private register: LoadedModelRegister;
   constructor() {
-    this._register = new LoadedModelRegister();
+    this.register = new LoadedModelRegister();
   }
 
   load(key: string, url: string) {
-    if (this._register.has(key)) {
+    if (this.register.has(key)) {
       console.log(`Model ${key} already exists`);
       return;
     }
 
-    this._register.loading(key, url);
+    this.register.loading(key, url);
 
     const loader = new GLTFLoader();
     loader.load(
       url,
       // called when loaded
       (gltf) => {
-        this._register.loaded(key, gltf.scene);
+        this.register.loaded(key, gltf.scene);
       },
       // called while loading is progressing
       function (xhr) {
@@ -120,18 +120,18 @@ export class ModelLoader {
   }
 
   getModel(key: string) {
-    return this._register.getModel(key);
+    return this.register.getModel(key);
   }
 
   getUrl(key: string) {
-    return this._register.getUrl(key);
+    return this.register.getUrl(key);
   }
 
   allLoaded() {
-    return this._register.allLoaded();
+    return this.register.allLoaded();
   }
 
   speak() {
-    this._register.speak();
+    this.register.speak();
   }
 }
