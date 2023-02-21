@@ -4,11 +4,16 @@ import { LoadedModelRegister, ModelLoader } from 'src/loader.ts';
 beforeEach(async (context) => {
   //  extend context
   context.register = new LoadedModelRegister();
+
+  // loader that mocks a full load
   context.loader = new ModelLoader();
   vi.spyOn(context.loader, 'load').mockImplementation((key, url) => {
     context.loader.register.loading(key, url);
     context.loader.register.loaded(key, 'model');
   });
+
+  // loader that has not finished loading a model
+  context.incompleteLoader = new ModelLoader()
 });
 
 describe('LoadedModelRegiter', () => {
@@ -38,17 +43,17 @@ describe('LoadedModelRegiter', () => {
   });
 
   test('getModel returns a model if loaded, or throws an error otherwise', ({ register }) => {
-    expect(() => register.getModel('jeep')).toThrowError('not loaded');
+    expect(() => register.getModel('jeep')).toThrowError('is unknown');
 
     register.loading('jeep', 'url');
-    expect(() => register.getModel('jeep')).toThrowError('not loaded');
+    expect(() => register.getModel('jeep')).toThrowError('is unknown');
 
     register.loaded('jeep', 'foo');
     expect(register.getModel('jeep')).toEqual('foo');
   });
 
-  test('getUrl returns urls key if exists, or throws an error otherwise', ({ register }) => {
-    expect(() => register.getUrl('jeep')).toThrowError('not loaded');
+  test('getUrl returns urls if key exists, or throws an error otherwise', ({ register }) => {
+    expect(() => register.getUrl('jeep')).toThrowError('is unknown');
 
     register.loading('jeep', 'jeep.glb');
     expect(register.getUrl('jeep')).toEqual('jeep.glb');
@@ -77,7 +82,7 @@ describe('LoadedModelRegiter', () => {
   test('isLoaded returns false while loading and true when loaded', ({ register }) => {
     expect(register.isLoaded('jeep')).toBeFalsy();
 
-    register.loading('jeep', 'jeep_multi.glb');
+    register.loading('jeep', 'jeep.glb');
     expect(register.isLoaded('jeep')).toBeFalsy();
 
     register.loaded('jeep', 'fake_object');
@@ -87,7 +92,7 @@ describe('LoadedModelRegiter', () => {
   test('isLoading returns true while loading and false when loaded', ({ register }) => {
     expect(register.isLoading('jeep')).toBeFalsy();
 
-    register.loading('jeep', 'jeep_multi.glb');
+    register.loading('jeep', 'jeep.glb');
     expect(register.isLoading('jeep')).toBeTruthy();
 
     register.loaded('jeep', 'fake_object');
@@ -109,8 +114,28 @@ describe('LoadedModelRegiter', () => {
 });
 
 describe('ModelLoader', () => {
-  test('load', ({ loader }) => {
+  test('mocked load method', ({ loader }) => {
     loader.load('jeep', 'jeep.glb');
-    expect(loader.getUrl('jeep')).toEqual('jeep.glb');
+    loader.load('plane', 'plange.glb')
+
+    // reload jeep again, nothing should happen
+    loader.load('jeep', 'jeep.glb');
+    expect(JSON.stringify(loader.keys) == JSON.stringify(['jeep', 'plane'])).toBeTruthy();
+  });
+
+  test('getModel returns model if key exists, or throws an error otherwise', ({ loader }) => {
+    loader.load('jeep', 'jeep.glb');
+
+    expect(loader.getModel('jeep')).toEqual('model')
+
+    expect(() => loader.getModel('foo')).toThrowError('is unknown');
+  });
+
+  test('getUrl returns urls if key exists, or throws an error otherwise', ({ loader }) => {
+    loader.load('jeep', 'jeep.glb');
+
+    expect(loader.getUrl('jeep')).toEqual('jeep.glb')
+
+    expect(() => loader.getUrl('foo')).toThrowError('is unknown');
   });
 });

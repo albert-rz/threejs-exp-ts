@@ -41,7 +41,7 @@ export class LoadedModelRegister {
       return this.records[key].model;
     }
 
-    throw `${key} is not loaded`;
+    throw `${key} is unknown`;
   }
 
   getUrl(key: string) {
@@ -49,7 +49,7 @@ export class LoadedModelRegister {
       return this.records[key].url;
     }
 
-    throw `${key} is not loaded`;
+    throw `${key} is unknown`;
   }
 
   isEmpty() {
@@ -114,9 +114,13 @@ export class ModelLoader {
       },
       // called when loading has errors
       function (error) {
-        console.log(`An error happened: ${error}`);
+        console.error(`An error happened: ${error}`);
       }
     );
+  }
+
+  get keys() {
+    return this.register.keys
   }
 
   getModel(key: string) {
