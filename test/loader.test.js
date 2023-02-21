@@ -12,8 +12,11 @@ beforeEach(async (context) => {
     context.loader.register.loaded(key, 'model');
   });
 
-  // loader that has not finished loading a model
-  context.incompleteLoader = new ModelLoader()
+  // loader that has not finished loading a model (i.e. loaded method has not been called)
+  context.incompleteLoader = new ModelLoader();
+  vi.spyOn(context.incompleteLoader, 'load').mockImplementation((key, url) => {
+    context.incompleteLoader.register.loading(key, url);
+  });
 });
 
 describe('LoadedModelRegiter', () => {
@@ -131,11 +134,23 @@ describe('ModelLoader', () => {
     expect(() => loader.getModel('foo')).toThrowError('is unknown');
   });
 
-  test('getUrl returns urls if key exists, or throws an error otherwise', ({ loader }) => {
+  test('getModel throws an error if not loaded', ({ incompleteLoader }) => {
+    incompleteLoader.load('jeep', 'jeep.glb');
+
+    expect(() => incompleteLoader.getModel('jeep')).toThrowError('is unknown')
+  });
+
+  test('getUrl returns url if key exists, or throws an error otherwise', ({ loader }) => {
     loader.load('jeep', 'jeep.glb');
 
     expect(loader.getUrl('jeep')).toEqual('jeep.glb')
 
     expect(() => loader.getUrl('foo')).toThrowError('is unknown');
   });
+
+  test('getUrl returns url also when model is being loaded', ({ incompleteLoader }) => {
+    incompleteLoader.load('jeep', 'jeep.glb');
+
+    expect(incompleteLoader.getUrl('jeep')).toEqual('jeep.glb')
+  })
 });
