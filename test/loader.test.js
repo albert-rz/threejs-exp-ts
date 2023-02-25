@@ -114,12 +114,16 @@ describe('LoadedModelRegiter', () => {
     register.loaded('jeep', 'jeep.model');
     expect(register.allLoaded()).toBeTruthy();
   });
+
+  test('speak does not crash', ({ register }) => {
+    register.speak();
+  });
 });
 
 describe('ModelLoader', () => {
   test('mocked load method', ({ loader }) => {
     loader.load('jeep', 'jeep.glb');
-    loader.load('plane', 'plange.glb')
+    loader.load('plane', 'plange.glb');
 
     // reload jeep again, nothing should happen
     loader.load('jeep', 'jeep.glb');
@@ -129,7 +133,7 @@ describe('ModelLoader', () => {
   test('getModel returns model if key exists, or throws an error otherwise', ({ loader }) => {
     loader.load('jeep', 'jeep.glb');
 
-    expect(loader.getModel('jeep')).toEqual('model')
+    expect(loader.getModel('jeep')).toEqual('model');
 
     expect(() => loader.getModel('foo')).toThrowError('is unknown');
   });
@@ -137,13 +141,13 @@ describe('ModelLoader', () => {
   test('getModel throws an error if not loaded', ({ incompleteLoader }) => {
     incompleteLoader.load('jeep', 'jeep.glb');
 
-    expect(() => incompleteLoader.getModel('jeep')).toThrowError('is unknown')
+    expect(() => incompleteLoader.getModel('jeep')).toThrowError('is unknown');
   });
 
   test('getUrl returns url if key exists, or throws an error otherwise', ({ loader }) => {
     loader.load('jeep', 'jeep.glb');
 
-    expect(loader.getUrl('jeep')).toEqual('jeep.glb')
+    expect(loader.getUrl('jeep')).toEqual('jeep.glb');
 
     expect(() => loader.getUrl('foo')).toThrowError('is unknown');
   });
@@ -151,6 +155,30 @@ describe('ModelLoader', () => {
   test('getUrl returns url also when model is being loaded', ({ incompleteLoader }) => {
     incompleteLoader.load('jeep', 'jeep.glb');
 
-    expect(incompleteLoader.getUrl('jeep')).toEqual('jeep.glb')
-  })
+    expect(incompleteLoader.getUrl('jeep')).toEqual('jeep.glb');
+  });
+
+  test('allLoaded returns true if all models loaded or empty', ({ loader }) => {
+    // empty
+    expect(loader.allLoaded()).toBeTruthy();
+
+    // loaded
+    loader.load('jeep', 'jeep.glb');
+    loader.load('plane.glb', 'jeep.glb');
+    expect(loader.allLoaded()).toBeTruthy();
+  });
+
+  test('allLoaded returns false if models are not laoded', ({ incompleteLoader }) => {
+    // empty
+    expect(incompleteLoader.allLoaded()).toBeTruthy();
+
+    incompleteLoader.load('jeep', 'jeep.glb');
+    incompleteLoader.load('plane.glb', 'jeep.glb');
+
+    expect(incompleteLoader.allLoaded()).toBeFalsy();
+  });
+
+  test('speak does not crash', ({ loader }) => {
+    loader.speak();
+  });
 });

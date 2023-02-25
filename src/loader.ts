@@ -57,11 +57,12 @@ export class LoadedModelRegister {
   }
 
   isLoading(key: string) {
-    if (!this.has(key)) {
-      return false;
-    }
+    // if (!this.has(key)) {
+    //   return false;
+    // }
 
-    return this.records[key].model == undefined;
+    // return this.records[key].model == undefined;
+    return false;
   }
 
   isLoaded(key: string) {
@@ -120,7 +121,7 @@ export class ModelLoader {
   }
 
   get keys() {
-    return this.register.keys
+    return this.register.keys;
   }
 
   getModel(key: string) {
@@ -134,6 +135,31 @@ export class ModelLoader {
   allLoaded() {
     return this.register.allLoaded();
   }
+
+  // async waitFor(key: string, delay: number = 100) {
+
+  //   for (let i = 0 ; i < 100 ; i++ ){
+  //     if (this.register.isLoaded(key)) {
+  //       return;
+  //     }
+
+  //     console.log(`Waiting for ${key}`);
+  //     await this.sleep(delay);  
+  //   }
+    
+  //   throw 'foo'
+  // }
+
+  // private sleep(ms: number) {
+  //   return new Promise((resolve) => setTimeout(resolve, ms));
+  // }
+
+  waitFor(key: string, delay: number = 100) {
+    if (!this.register.isLoaded(key)) {
+      setTimeout((x) => {this.waitFor(x)}, delay, key)
+    }
+  }
+
 
   speak() {
     this.register.speak();

@@ -100,21 +100,9 @@
       // Body
       const loader = new ModelLoader();
       loader.load('jeep', 'models/jeep/jeep_multi.glb');
-      loader.load('fake', 'models/jeep/jeep_multi.glb');
 
-      function sleep(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-      }
-
-      async function foobar() {
-        await sleep(3000);
-        loader.speak();
-        console.log(`allLoaded ${loader.allLoaded()}`);
-      }
-      foobar();
-
+      loader.waitFor('jeep', 100);
       loader.speak();
-      console.log(loader.allLoaded());
 
       // const loader = new GLTFLoader();
 
