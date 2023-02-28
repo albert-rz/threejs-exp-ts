@@ -4,6 +4,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 type LoadedModelRecord = {
   url: string;
   model?: Group;
+  startTime: number;
+  endTime?: number;
 };
 
 export class LoadedModelRegister {
@@ -25,7 +27,7 @@ export class LoadedModelRegister {
       throw `${key} is already loading`;
     }
 
-    this.records[key] = { url: url };
+    this.records[key] = { url: url, startTime: Date.now() };
   }
 
   loaded(key: string, model: Group) {
@@ -33,7 +35,8 @@ export class LoadedModelRegister {
       throw 'loading method must be called first';
     }
 
-    this.records[key]['model'] = model;
+    this.records[key].model = model;
+    this.records[key].endTime = Date.now();
   }
 
   getModel(key: string) {
@@ -57,12 +60,11 @@ export class LoadedModelRegister {
   }
 
   isLoading(key: string) {
-    // if (!this.has(key)) {
-    //   return false;
-    // }
+    if (!this.has(key)) {
+      return false;
+    }
 
-    // return this.records[key].model == undefined;
-    return false;
+    return this.records[key].model == undefined;
   }
 
   isLoaded(key: string) {
