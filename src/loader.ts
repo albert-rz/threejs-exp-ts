@@ -150,23 +150,23 @@ export class ModelLoader {
     return this.register.allLoaded();
   }
 
-  async waitFor(key: string, delay: number = 10000000) {
+  // async waitFor(key: string, delay: number = 10000000) {
 
-    for (let i = 0 ; i < 100 ; i++ ){
-      if (this.register.isLoaded(key)) {
-        return;
-      }
+  //   for (let i = 0 ; i < 100 ; i++ ){
+  //     if (this.register.isLoaded(key)) {
+  //       return;
+  //     }
 
-      console.log(`Waiting for ${key}`);
-      await this.sleep(delay);  
-    }
+  //     console.log(`Waiting for ${key}`);
+  //     await this.sleep(delay);  
+  //   }
     
-    throw 'foo'
-  }
+  //   throw 'foo'
+  // }
 
-  private sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+  // private sleep(ms: number) {
+  //   return new Promise((resolve) => setTimeout(resolve, ms));
+  // }
 
   // waitFor(key: string, delay: number = 100) {
   //   if (!this.register.isLoaded(key)) {

@@ -101,12 +101,6 @@
       const loader = new ModelLoader();
       loader.load('jeep', 'models/jeep/jeep_multi.glb');
 
-      loader.waitFor('jeep', 10000);
-      console.log(loader.register.isLoaded('jeep'))
-      console.log(loader.register.records['jeep'])
-      // console.log(loader.getLoadTime('jeep'))
-      loader.speak();
-
       // const loader = new GLTFLoader();
 
       // const jeep = null
