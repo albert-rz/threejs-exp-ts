@@ -46,6 +46,7 @@
       import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
       import { ModelLoader } from '/src/loader.ts';
+      import { Car } from '/src/car.ts';
 
       // GUI
       const gui = new GUI();
@@ -98,8 +99,17 @@
       const objLoader = new OBJLoader();
 
       // Body
+      const jeep1 = new Car();
+      const jeep2 = new Car();
+
       const loader = new ModelLoader();
-      loader.load('jeep', 'models/jeep/jeep_multi.glb');
+      loader.load('jeep', 'models/jeep/jeep_multi.glb', () => {
+        jeep1.addModel(loader.getModel('jeep'));
+        scene.add(jeep1.model);
+
+        jeep2.addModel(loader.getModel('jeep'));
+        scene.add(jeep2.model);
+      });
 
       // const loader = new GLTFLoader();
 

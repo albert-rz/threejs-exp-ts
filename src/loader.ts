@@ -57,7 +57,7 @@ export class LoadedModelRegister {
 
   getLoadTime(key: string) {
     if (this.has(key) && this.isLoaded(key)) {
-      return (this.records[key].endTime!.getTime() - this.records[key].startTime.getTime()) / 1000
+      return (this.records[key].endTime!.getTime() - this.records[key].startTime.getTime()) / 1000;
     }
 
     throw `${key} is unknown or not loaded`;
@@ -104,7 +104,7 @@ export class ModelLoader {
     this.register = new LoadedModelRegister();
   }
 
-  load(key: string, url: string) {
+  load(key: string, url: string, fn) {
     if (this.register.has(key)) {
       console.log(`Model ${key} already exists`);
       return;
@@ -118,8 +118,8 @@ export class ModelLoader {
       // called when loaded
       (gltf) => {
         this.register.loaded(key, gltf.scene);
-        // console.log(this.getLoadTime(key))
-        console.log(`${key} loaded in ${this.getLoadTime(key)}s`)
+        console.log(`${key} loaded in ${this.getLoadTime(key)}s`);
+        fn();
       },
       // called while loading is progressing
       (xhr) => {
