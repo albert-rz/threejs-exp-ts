@@ -57,7 +57,7 @@ export class LoadedModelRegister {
 
   getLoadTime(key: string) {
     if (this.has(key) && this.isLoaded(key)) {
-      return this.records[key].startTime
+      return (this.records[key].endTime!.getTime() - this.records[key].startTime.getTime()) / 1000
     }
 
     throw `${key} is unknown or not loaded`;
@@ -118,13 +118,15 @@ export class ModelLoader {
       // called when loaded
       (gltf) => {
         this.register.loaded(key, gltf.scene);
+        // console.log(this.getLoadTime(key))
+        console.log(`${key} loaded in ${this.getLoadTime(key)}s`)
       },
       // called while loading is progressing
-      function (xhr) {
+      (xhr) => {
         console.log(`${key} is ${(xhr.loaded / xhr.total) * 100}% loaded`);
       },
       // called when loading has errors
-      function (error) {
+      (error) => {
         console.error(`An error happened: ${error}`);
       }
     );
@@ -143,7 +145,7 @@ export class ModelLoader {
   }
 
   getLoadTime(key: string) {
-    return this.register.getLoadTime(key)
+    return this.register.getLoadTime(key);
   }
 
   allLoaded() {
@@ -158,9 +160,9 @@ export class ModelLoader {
   //     }
 
   //     console.log(`Waiting for ${key}`);
-  //     await this.sleep(delay);  
+  //     await this.sleep(delay);
   //   }
-    
+
   //   throw 'foo'
   // }
 
@@ -173,7 +175,6 @@ export class ModelLoader {
   //     setTimeout((x) => {this.waitFor(x)}, delay, key)
   //   }
   // }
-
 
   speak() {
     this.register.speak();
