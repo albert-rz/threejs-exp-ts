@@ -99,47 +99,42 @@
       const objLoader = new OBJLoader();
 
       // Body
-      const jeep1 = new Car();
-      const jeep2 = new Car();
+      // const jeep1 = undefined;
 
       const loader = new ModelLoader();
-      loader.load('jeep', 'models/jeep/jeep_multi.glb', () => {
-        jeep1.addModel(loader.getModel('jeep'));
-        scene.add(jeep1.model);
+      loader.load('jeep', 'models/jeep/jeep_multi.glb')
 
-        jeep2.addModel(loader.getModel('jeep'));
-        scene.add(jeep2.model);
-      });
+      await loader.waitFor('jeep')
+
+      const jeep = new Car(loader.getModel('jeep'))
+      scene.add(jeep.model)
 
       // const loader = new GLTFLoader();
 
-      // const jeep = null
-      // let wheel = null
-
       // loader.load(
       //   'models/jeep/jeep_multi.glb',
-      //   function(gltf) {
-      //     scene.add(gltf.scene)
+      //   function (gltf) {
+      //     scene.add(gltf.scene);
 
-      //     const body = gltf.scene.getObjectByName("body");
-      //     body.position.y = 2
-      //     console.log(body)
+      //     const body = gltf.scene.getObjectByName('body');
+      //     body.position.y = 2;
+      //     console.log(body);
 
-      //     wheel = gltf.scene.getObjectByName("wheel_front_right");
-      //     wheel.rotation.y = 0
-      //     console.log(wheel.rotation.x)
-      //     console.log(wheel.rotation.y)
-      //     console.log(wheel.rotation.z)
+      //     wheel = gltf.scene.getObjectByName('wheel_front_right');
+      //     wheel.rotation.y = 0;
+      //     console.log(wheel.rotation.x);
+      //     console.log(wheel.rotation.y);
+      //     console.log(wheel.rotation.z);
       //   },
       //   // called while loading is progressing
-      //   function ( xhr ) {
-      //     console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+      //   function (xhr) {
+      //     console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
       //   },
       //   // called when loading has errors
-      //   function ( error ) {
-      //     console.log( 'An error happened' );
+      //   function (error) {
+      //     console.log('An error happened');
       //   }
-      // )
+      // );
 
       // GUI options
       const opt = {

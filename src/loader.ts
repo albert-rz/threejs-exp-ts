@@ -55,6 +55,14 @@ export class LoadedModelRegister {
     throw `${key} is unknown or not loaded`;
   }
 
+  getStartTime(key: string) {
+    if (this.has(key)) {
+      return this.records[key].startTime
+    }
+
+    throw `${key} is unknown`
+  }
+
   getLoadTime(key: string) {
     if (this.has(key) && this.isLoaded(key)) {
       return (this.records[key].endTime!.getTime() - this.records[key].startTime.getTime()) / 1000;
@@ -104,7 +112,7 @@ export class ModelLoader {
     this.register = new LoadedModelRegister();
   }
 
-  load(key: string, url: string, fn) {
+  load(key: string, url: string) {
     if (this.register.has(key)) {
       console.log(`Model ${key} already exists`);
       return;
@@ -119,7 +127,6 @@ export class ModelLoader {
       (gltf) => {
         this.register.loaded(key, gltf.scene);
         console.log(`${key} loaded in ${this.getLoadTime(key)}s`);
-        fn();
       },
       // called while loading is progressing
       (xhr) => {
@@ -152,23 +159,27 @@ export class ModelLoader {
     return this.register.allLoaded();
   }
 
-  // async waitFor(key: string, delay: number = 10000000) {
-
-  //   for (let i = 0 ; i < 100 ; i++ ){
-  //     if (this.register.isLoaded(key)) {
-  //       return;
-  //     }
-
-  //     console.log(`Waiting for ${key}`);
-  //     await this.sleep(delay);
-  //   }
-
-  //   throw 'foo'
+  // waitFor(key: string){
+  //   return Promise((resolve))
   // }
 
-  // private sleep(ms: number) {
-  //   return new Promise((resolve) => setTimeout(resolve, ms));
-  // }
+  async waitFor(key: string, maxDelay: number = 10000) {
+
+    while(Date.now() - this.register.getStartTime(key).getTime() < maxDelay) {
+      if (this.register.isLoaded(key)) {
+        return;
+      }
+
+      console.log(`Waiting for ${key}`);
+      await this.sleep(100);
+    }
+
+    throw `${key} could not be loaded in ${maxDelay}ms`
+  }
+
+  private sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 
   // waitFor(key: string, delay: number = 100) {
   //   if (!this.register.isLoaded(key)) {
