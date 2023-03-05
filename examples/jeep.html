@@ -102,12 +102,12 @@
       // const jeep1 = undefined;
 
       const loader = new ModelLoader();
-      loader.load('jeep', 'models/jeep/jeep_multi.glb')
+      loader.load('jeep', 'models/jeep/jeep_multi.glb');
 
-      await loader.waitFor('jeep')
+      await loader.waitFor('jeep');
 
-      const jeep = new Car(loader.getModel('jeep'))
-      scene.add(jeep.model)
+      const jeep = new Car(loader.getModel('jeep'));
+      scene.add(jeep.model);
 
       // const loader = new GLTFLoader();
 
@@ -170,6 +170,7 @@
       // });
 
       const foo = 4;
+      const keyboardControl = false
 
       // Render
       function render() {
@@ -191,6 +192,15 @@
           renderer.setSize(window.innerWidth, window.innerHeight);
         },
         false
+      );
+
+      window.addEventListener(
+        'keydown',
+        (event) => {
+          console.log(event.code)
+          jeep.update(event.code);
+        },
+        true
       );
 
       // Start render
