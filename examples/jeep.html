@@ -138,7 +138,7 @@
 
       // GUI options
       const opt = {
-        fixed: false,
+        fixed: true,
         showAxes: axes.visible,
         // width: wheel.geometry.parameters.width,
         // height: box.geometry.parameters.height,
@@ -170,14 +170,13 @@
       // });
 
       const foo = 4;
-      const keyboardControl = false
+      const keyboardControl = false;
 
       // Render
       function render() {
         requestAnimationFrame(render);
 
         if (!opt.fixed) {
-          // prism.update({width: 10, height: 10})
         }
 
         renderer.render(scene, camera);
@@ -197,8 +196,24 @@
       window.addEventListener(
         'keydown',
         (event) => {
-          console.log(event.code)
-          jeep.update(event.code);
+          console.log(event.code);
+          // jeep.update(event.code);
+          switch (event.code) {
+            case 'ArrowUp':
+              jeep.move({ delta: 0.1 });
+              break;
+            case 'ArrowDown':
+              jeep.move({ delta: -0.1 });
+              break;
+            case 'ArrowRight':
+              jeep.move({ theta: 0.1 });
+              break;
+            case 'ArrowLeft':
+              jeep.move({ theta: -0.1 });
+              break;
+            default:
+              break;
+          }
         },
         true
       );

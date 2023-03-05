@@ -57,10 +57,10 @@ export class LoadedModelRegister {
 
   getStartTime(key: string) {
     if (this.has(key)) {
-      return this.records[key].startTime
+      return this.records[key].startTime;
     }
 
-    throw `${key} is unknown`
+    throw `${key} is unknown`;
   }
 
   getLoadTime(key: string) {
@@ -164,8 +164,7 @@ export class ModelLoader {
   // }
 
   async waitFor(key: string, maxDelay: number = 10000) {
-
-    while(Date.now() - this.register.getStartTime(key).getTime() < maxDelay) {
+    while (Date.now() - this.register.getStartTime(key).getTime() < maxDelay) {
       if (this.register.isLoaded(key)) {
         return;
       }
@@ -174,7 +173,7 @@ export class ModelLoader {
       await this.sleep(100);
     }
 
-    throw `${key} could not be loaded in ${maxDelay}ms`
+    throw `${key} could not be loaded in ${maxDelay}ms`;
   }
 
   private sleep(ms: number) {

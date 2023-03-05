@@ -1,52 +1,48 @@
 import { Group } from 'three';
 
+interface CarMovement {
+  delta?: number;
+  theta?: number;
+}
+
 export class Car {
   private _model: Group;
   private _speed: number;
   private _acceleration: number;
-  private _maxSpeed: number
-  private _maxAcceleration: number
+  private _turn: number;
+  private _maxSpeed: number;
+  private _maxAcceleration: number;
+  private _maxTurn: number;
 
   constructor(model: Group) {
     this._model = model;
     this._speed = 0.0;
     this._acceleration = 0.0;
+    this._turn = 0.0;
 
     this._maxSpeed = 10;
     this._maxAcceleration = 3;
+    this._maxTurn = Math.PI / 4;
   }
 
   get model() {
     return this._model;
   }
 
-  update(keyCode: string = '') {
-    switch (keyCode) {
-      case 'ArrowUp':
-        this.accelerate()
-        break;
-      case 'ArrowDown':
-        this.accelerate(-0.5)
-        break;
-      case 'ArrowRight':
-        console.log('Turn right')
-        break
-      default:
-        this.accelerate(-0.01)
-        break;
-    }
-  }
-
-  accelerate(delta: number = 0.1) {
-    console.log(`accelerate by ${delta}`);
+  move({ delta = 0, theta = 0 }: CarMovement) {
     if (delta > 0) {
-      this._acceleration = Math.min(this._acceleration + delta, this._maxAcceleration)
+      this._acceleration = Math.min(this._acceleration + delta, this._maxAcceleration);
+    } else if (delta < 0) {
+      this._acceleration = Math.max(this._acceleration + delta, 0);
     }
 
-    if (delta < 0) {
-      this._acceleration = Math.max(this._acceleration + delta, 0)
+    if (theta > 0) {
+      this._turn = Math.min(this._turn + theta, this._maxTurn);
+    } else if (theta < 0) {
+      this._turn = Math.max(this._turn + theta, -this._maxTurn);
     }
-    console.log(`acceleration is ${this._acceleration}`)
+
+    console.log(`acceleration: ${this._acceleration} turn: ${this._turn}`);
   }
 }
 
