@@ -1,0 +1,20 @@
+{
+  "name": "threejs-exp-ts",
+  "version": "0.1.0",
+  "description": "Three.js experiments",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && vite build --force && cp -r models/ dist/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "three": "^0.151.3"
+  },
+  "devDependencies": {
+    "@types/three": "^0.150.2",
+    "prettier": "^3.0.0-alpha.7-for-vscode",
+    "vite": "^4.3.1"
+  }
+}

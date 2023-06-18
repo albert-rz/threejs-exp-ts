@@ -1,1 +1,1 @@
-# threejs-exp-ts
+# Three.js experiments
